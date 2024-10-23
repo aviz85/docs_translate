@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}My Documents{% endblock %}
+
+{% block content %}
+<h2>My Documents</h2>
+<a href="{% url 'core:upload_document' %}" class="btn btn-primary mb-3">Upload New Document</a>
+
+{% if documents %}
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Source Language</th>
+                    <th>Target Language</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for doc in documents %}
+                    <tr>
+                        <td>{{ doc.title }}</td>
+                        <td>{{ doc.source_language }}</td>
+                        <td>{{ doc.target_language }}</td>
+                        <td>
+                            <span class="badge {% if doc.status == 'completed' %}bg-success
+                                           {% elif doc.status == 'failed' %}bg-danger
+                                           {% elif doc.status == 'in_progress' %}bg-warning
+                                           {% else %}bg-secondary{% endif %}">
+                                {{ doc.status }}
+                            </span>
+                        </td>
+                        <td>{{ doc.created_at|date:"M d, Y" }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <div class="alert alert-info">
+        You haven't uploaded any documents yet.
+    </div>
+{% endif %}
+{% endblock %}

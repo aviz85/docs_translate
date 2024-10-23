@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="text-center">
+    <h1 class="display-4">Welcome to Docs Translate</h1>
+    <p class="lead">Translate your documents easily and efficiently</p>
+    
+    {% if user.is_authenticated %}
+        <div class="mt-4">
+            <a href="{% url 'core:upload_document' %}" class="btn btn-primary btn-lg">Upload Document</a>
+            <a href="{% url 'core:document_list' %}" class="btn btn-secondary btn-lg">My Documents</a>
+        </div>
+    {% else %}
+        <div class="mt-4">
+            <a href="{% url 'login' %}" class="btn btn-primary btn-lg">Login to Start</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
