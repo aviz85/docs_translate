@@ -7,6 +7,9 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from .serializers import DocumentSerializer, DocumentCreateSerializer
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+from .permissions import IsOwner
 
 # Create your views here.
 
@@ -33,23 +36,69 @@ def upload_document(request):
     return render(request, 'core/upload_document.html', {'form': form})
 
 class DocumentViewSet(viewsets.ModelViewSet):
+    """
+    ViewSet for managing documents.
+    """
     permission_classes = [permissions.IsAuthenticated]
+    serializer_class = DocumentSerializer
     
     def get_queryset(self):
-        return Document.objects.filter(uploaded_by=self.request.user)
-    
-    def get_serializer_class(self):
-        if self.action == 'create':
-            return DocumentCreateSerializer
-        return DocumentSerializer
+        return Document.objects.filter(user=self.request.user)
     
     def perform_create(self, serializer):
-        serializer.save(uploaded_by=self.request.user)
-    
+        serializer.save(user=self.request.user)
+
+    @swagger_auto_schema(
+        operation_description="List all documents for the current user",
+        responses={200: DocumentSerializer(many=True)}
+    )
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_description="Create a new document",
+        request_body=DocumentCreateSerializer,
+        responses={
+            201: DocumentSerializer,
+            400: "Bad Request",
+            401: "Unauthorized"
+        }
+    )
+    def create(self, request, *args, **kwargs):
+        return super().create(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_description="Get a specific document by ID",
+        responses={
+            200: DocumentSerializer,
+            404: "Not Found"
+        }
+    )
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        method='post',
+        operation_description="Start translation process for a document",
+        responses={
+            200: openapi.Response(
+                description="Translation started",
+                examples={
+                    "application/json": {
+                        "status": "translation started"
+                    }
+                }
+            ),
+            404: "Document not found",
+            400: "Translation error"
+        }
+    )
     @action(detail=True, methods=['post'])
     def translate(self, request, pk=None):
+        """
+        Trigger translation for a specific document.
+        """
         document = self.get_object()
-        # Add translation logic here
         document.status = 'in_progress'
         document.save()
         return Response({'status': 'translation started'})

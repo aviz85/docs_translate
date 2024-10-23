@@ -1,25 +1,24 @@
 # Python
-*.py[cod]
 __pycache__/
+*.py[cod]
+*$py.class
 *.so
-*.egg
-*.egg-info/
-dist/
+.Python
+env/
 build/
-eggs/
-parts/
-bin/
-var/
-sdist/
 develop-eggs/
-.installed.cfg
+dist/
+downloads/
+eggs/
+.eggs/
 lib/
 lib64/
-venv/
-env/
-.env/
-.venv/
-ENV/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
 
 # Django
 *.log
@@ -27,7 +26,18 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 media/
-static/
+
+# React
+node_modules/
+/build
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # If you're using PostgreSQL
 *.psql
@@ -43,7 +53,6 @@ static/
 .idea_modules/
 
 # Mac OS
-.DS_Store
 .AppleDouble
 .LSOverride
 ._*
@@ -90,7 +99,6 @@ docs/_build/
 .env.*.local
 
 # Node modules (if using any JavaScript tools)
-node_modules/
 
 # Compiled files
 *.pyc
@@ -98,5 +106,5 @@ node_modules/
 *.pyd
 
 # Distribution / packaging
-.Python
-downloads/
+
+venv/
